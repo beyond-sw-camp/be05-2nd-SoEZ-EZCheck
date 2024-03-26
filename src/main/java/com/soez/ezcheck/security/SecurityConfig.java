@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    private final String[] allowedUrls = {"/user/**", "/h2-console/**"};	// sign-up, sign-in 추가
+    private final String[] allowedUrls = {"/user/**", "/h2-console/**", "/facility/**", "/checkIn/**"};	// sign-up, sign-in 추가 facility, checkin추후 삭제
  
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
