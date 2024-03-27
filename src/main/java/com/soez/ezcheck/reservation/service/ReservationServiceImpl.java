@@ -70,7 +70,7 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public boolean deleteReservation(Reservation reservation) {
 		try {
-			reservationRepository.delete(reservation);
+			reservationRepository.deleteById(reservation.getRvId());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

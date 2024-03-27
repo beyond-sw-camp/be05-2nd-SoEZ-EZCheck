@@ -27,7 +27,7 @@ public class RoomController {
     
     private final RoomService roomService;
 
-    @PreAuthorize("hasAuthority('Admin')")
+
     @GetMapping("/availableRooms")
     public ResponseEntity<List<Room>> getMethodName(@RequestBody AvailableRoomsRequestDTO requestParam) {
         ResponseEntity<List<Object[]>> responseEntity = null;

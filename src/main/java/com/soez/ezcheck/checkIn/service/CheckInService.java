@@ -93,7 +93,7 @@ public class CheckInService {
 		} else {
 
 			Reservation reservationToCheckIn = reservationOptional.get();
-			Optional<Room> roomOptional = roomRepository.findById(reservationToCheckIn.getRvId());
+			Optional<Room> roomOptional = roomRepository.findById(request.getRoomId());
 			if (roomOptional.isPresent()) {
 				Room room = roomOptional.get();
 				if (room.getRoomStatusEnum() == RoomStatusEnum.AVAILABLE) {

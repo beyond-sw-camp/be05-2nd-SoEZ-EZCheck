@@ -26,7 +26,7 @@ import com.soez.ezcheck.serviceRequest.service.ServiceRequestService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@PreAuthorize("hasAuthority('Admin')")
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/serviceRequest")
@@ -34,6 +34,7 @@ public class ServiceRequestController {
 
     private final   ServiceRequestService serviceRequestService;
 
+    @PreAuthorize("hasAuthority('User')")
     @Tag(name = "ServiceRequest-User")
     @GetMapping("/myServiceRequests")
     public ResponseEntity<List<ServiceRequest>> myRequests(@RequestBody ServiceRequestDTO requestDTO){
@@ -45,6 +46,7 @@ public class ServiceRequestController {
         }
     }
 
+    @PreAuthorize("hasAuthority('User')")
     @Tag(name = "ServiceRequest-User")
     @PostMapping("/make")
     public ResponseEntity<Boolean> makeServiceRequest(@RequestBody ServiceRequestDTO requestDTO){
@@ -54,6 +56,7 @@ public class ServiceRequestController {
 
 
     // 처리 결과 상관 없이 전체 결과 불러오기
+    @PreAuthorize("hasAuthority('Admin')")
     @GetMapping(value = "/findAllServiceRequest")
     public ResponseEntity<List<ServiceRequest>> findAllServiceRequest() {
         List<ServiceRequest> list = serviceRequestService.findAllServiceRequest();
@@ -62,6 +65,7 @@ public class ServiceRequestController {
     }
 
     //특정 고객이 요청한 서비스 LIST 확인
+    @PreAuthorize("hasAuthority('Admin')")
     @GetMapping(value = "/UidServiceRequest/{uId}" , produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<List<ServiceRequest>> UidServiceRequest(@PathVariable("uId") String uId) {
         List<ServiceRequest> list = serviceRequestService.findServiceRequestByUId(uId);
@@ -69,6 +73,7 @@ public class ServiceRequestController {
     }
 
     // 고객 서비스 요청 처리
+    @PreAuthorize("hasAuthority('Admin')")
     @GetMapping(value = "/updateServiceRequestStatus/{rqId}" , produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> updateServiceRequestStatus(@PathVariable("rqId") Integer rqId) {
         Optional<ServiceRequest> serviceRequest = serviceRequestService.find(rqId);
