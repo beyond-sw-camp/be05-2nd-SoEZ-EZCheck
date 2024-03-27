@@ -112,6 +112,8 @@ public class CheckInService {
 					LocalDateTime currentTime = LocalDateTime.now();
 					checkIn.setCinDate(Date.valueOf(currentTime.toLocalDate()));
 					checkIn.setCinTime(Time.valueOf(currentTime.toLocalTime()));
+					checkIn.setReservation(reservationRepository.findById(request.getRvId()).get());
+					checkIn.setRoom(roomRepository.findById(request.getRoomId()).get());
 					checkInRepository.save(checkIn);
 
 					return "체크인이 완료되었습니다.";
