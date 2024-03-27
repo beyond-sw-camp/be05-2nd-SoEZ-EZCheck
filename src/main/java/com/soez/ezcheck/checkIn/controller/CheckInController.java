@@ -44,6 +44,7 @@ public class CheckInController {
 		return list;
 	}
 
+
 	@PreAuthorize("hasAuthority('User')")
 	@GetMapping("/reservations/{uId}")
 	public ResponseEntity<List<Reservation>> findAllReservationsById(@PathVariable("rvId") Integer rvId) {
