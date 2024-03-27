@@ -37,7 +37,8 @@ public class FacilityController {
 	 * @param requestDTO 예약을 원하는 인원수, 날짜, 시간
 	 * @return 조회된 예약이 가능한 시설물들 리스트 List<>
 	 */
-	 @GetMapping("/list")
+	@PreAuthorize("hasAuthority('User')")
+	@GetMapping("/list")
 	public ResponseEntity<List<Facility>> listFacilities(@RequestBody FacilityReservationRequestDTO requestDTO) {
 		Integer peopleToReserve = requestDTO.getPeopleToReserve();
 		Date date = requestDTO.getDate();
@@ -77,7 +78,7 @@ public class FacilityController {
 	 * @return 예약내역(시설명, 예약 날짜, 예약 시간, 예약 인원수)들을 담은 List<>
 	 */
 	@PreAuthorize("hasAuthority('User')")
-	 @GetMapping("/user/{uId}")
+	@GetMapping("/user/{uId}")
 	public List<FacilityReservationDetailsDTO> getReservationDetails(@PathVariable("uId") String uId) {
 		return facilityService.getReservationDetails(uId);
 	}

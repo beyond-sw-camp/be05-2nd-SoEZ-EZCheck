@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -86,6 +87,7 @@ public class UsersController {
 		return new ResponseEntity<>(msg, HttpStatus.OK);
 	}
 
+	@Tag(name = "User")
 	@GetMapping("/signin")
 	public ResponseEntity<SignInResponse> signIn(@RequestBody UserSignInDTO userSignInDTO) {
 		SignInResponse msg = userService.signIn(userSignInDTO);
@@ -98,6 +100,7 @@ public class UsersController {
 	 * @param passwordResetDTO 사용자가 입력한 ID, 이메일, 새로운 비밀번호
 	 * @return 비밀번호 재설정 성공여부에 따른 결과 메시지
 	 */
+	@PreAuthorize("hasAuthority('User')")
 	@PostMapping("/reset-password")
 	public ResponseEntity<String> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
 		String userId = passwordResetDTO.getUserId();
@@ -119,6 +122,7 @@ public class UsersController {
 	 * @param passwordResetDTO 사용자가 입력한 이메일 주소, 인증코드, 새로운 비밀번호
 	 * @return 비밀번호 재설정 성공여부에 따른 결과 메시지
 	 */
+	@PreAuthorize("hasAuthority('User')")
 	@PostMapping("/new-password")
 	public ResponseEntity<String> verifyResetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
 		String email = passwordResetDTO.getEmail();

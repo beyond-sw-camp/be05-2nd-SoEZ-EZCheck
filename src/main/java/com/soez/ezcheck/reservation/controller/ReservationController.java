@@ -29,6 +29,8 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
+
+    @Tag(name = "Reservation-All")
     @GetMapping("/listAvailableGrades")
     public ResponseEntity<List<RoomGrade>> listAvailableGrades(@RequestBody ReservationRequestDTO requestDTO) {
         List<RoomGrade> list = reservationService.avalableRoomGrades(requestDTO.getRvDateFrom(), requestDTO.getRvDateTo());
@@ -40,6 +42,7 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAuthority('User')")
+    @Tag(name = "Reservation-User")
     @PostMapping("/make")
     public ResponseEntity<Boolean> makeReservation(@RequestBody ReservationRequestDTO requestDTO){
         Boolean response = reservationService.addReservation(requestDTO);
@@ -51,6 +54,7 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAuthority('User')")
+    @Tag(name = "Reservation-User")
     @GetMapping("/myReservations")
     public ResponseEntity<String> myReservations(@RequestBody ReservationRequestDTO requestDTO) {
         List<Reservation> list = reservationService.findMyReservations(requestDTO.getuId());
@@ -62,6 +66,7 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAuthority('User')")
+    @Tag(name = "Reservation-User")
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteReservation(@RequestBody Reservation requestDTO) {
         boolean deleted = reservationService.deleteReservation(requestDTO);
