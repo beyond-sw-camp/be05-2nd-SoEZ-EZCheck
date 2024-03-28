@@ -8,9 +8,10 @@ import lombok.Setter;
 public class CheckInRequestDTO {
 
     private String userId;
-    private String rvId;
+    private Integer rvId;
     private String roomPwd;
     private Integer roomId;
     private Integer rgId;
+
 
 }
