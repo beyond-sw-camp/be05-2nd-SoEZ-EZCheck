@@ -84,13 +84,15 @@ public class CheckOutController {
 
 	/**
 	 체크아웃 요청
-	 @param rId 객실 ID
+	 //@param rId 객실 ID
 	 @return 체크아웃 요청(rId)
 	 */
 	@PreAuthorize("hasAuthority('User')")
 	@PostMapping("/checkoutrequest")
-	public String requestCheckOut(@RequestBody Integer rId) { //roomid로 받고
-		checkOutServiceImpl.requestCheckOut(rId);
+	public String requestCheckOut(@RequestBody CheckOutDTO checkOutDTO) {
+		System.out.println("####################################################3");
+		checkOutServiceImpl.requestCheckOut(checkOutDTO.getUserId(), checkOutDTO.getCinId());
+		System.out.println("####################################################3");
 		return "체크아웃이 요청되었습니다.";
 	}
 
@@ -101,10 +103,10 @@ public class CheckOutController {
 	@PostMapping("/perform")
 	public ResponseEntity<String> performCheckOut(@RequestParam(required = false) Integer cinId) {
 		if (cinId == null || !checkInRepository.existsById(cinId)) {
-			return ResponseEntity.ok("체크아웃되지 않았습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("체크아웃되지 않았습니다..");
 		} else {
 			checkOutServiceImpl.checkOut(cinId);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("체크아웃되었습니다..");
+			return ResponseEntity.ok("체크아웃되었습니다.");
 		}
 	}
 

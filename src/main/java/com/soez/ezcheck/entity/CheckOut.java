@@ -8,7 +8,7 @@ import java.sql.Time;
 
 @Data
 @Entity
-@Table(name = "checkout")
+@Table(name = "check_out")
 public class CheckOut {
 
     @Id
