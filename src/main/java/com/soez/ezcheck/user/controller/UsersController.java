@@ -2,9 +2,9 @@ package com.soez.ezcheck.user.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.soez.ezcheck.user.SignInResponse;
+import com.soez.ezcheck.user.domain.AccountDeleteDTO;
 import com.soez.ezcheck.user.domain.EmailCheckDTO;
+import com.soez.ezcheck.user.domain.PasswordResetDTO;
+import com.soez.ezcheck.user.domain.UserInfoDTO;
 import com.soez.ezcheck.user.domain.UserSignInDTO;
 import com.soez.ezcheck.user.domain.UserSignUpDTO;
 import com.soez.ezcheck.user.service.MailService;
@@ -38,7 +41,6 @@ public class UsersController {
 	 * @param userSignUpDTO 사용자가 입력한 ID, 이름, 비밀번호, 비밀번호 확인, 전화번호, 이메일
 	 * @return 회원가입 성공여부에 따른 결과 메시지
 	 */
-
 	@PostMapping("/signup")
 	public ResponseEntity<List<String>> signUp(@Valid @RequestBody UserSignUpDTO userSignUpDTO) {
 		List<String> msg = new ArrayList<>();
@@ -95,14 +97,14 @@ public class UsersController {
 	/**
 	 * 사용자로부터 입력받은 ID와 이메일로 비밀번호 재설정
 	 * @author Jihwan
-	 * @param request 사용자가 입력한 ID, 이메일, 새로운 비밀번호
+	 * @param passwordResetDTO 사용자가 입력한 ID, 이메일, 새로운 비밀번호
 	 * @return 비밀번호 재설정 성공여부에 따른 결과 메시지
 	 */
 	@PreAuthorize("hasAuthority('User')")
 	@PostMapping("/reset-password")
-	public ResponseEntity<String> resetPassword(@RequestBody Map<String, String> request) {
-		String userId = request.get("userId");
-		String email = request.get("email");
+	public ResponseEntity<String> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
+		String userId = passwordResetDTO.getUserId();
+		String email = passwordResetDTO.getEmail();
 
 		if (!userService.existsByUIdAndUEmail(userId, email)) {
 			return new ResponseEntity<>("입력하신 ID 또는 이메일이 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
@@ -117,15 +119,15 @@ public class UsersController {
 	/**
 	 * 사용자로부터 인증코드를 입력받아, 전송된 인증코드와 일치한지 확인하여 비밀번호 재설정 진행
 	 * @author Jihwan
-	 * @param request 사용자가 입력한 이메일 주소, 인증코드, 새로운 비밀번호
+	 * @param passwordResetDTO 사용자가 입력한 이메일 주소, 인증코드, 새로운 비밀번호
 	 * @return 비밀번호 재설정 성공여부에 따른 결과 메시지
 	 */
 	@PreAuthorize("hasAuthority('User')")
-	@PostMapping("/newpassword")
-	public ResponseEntity<String> verifyResetPassword(@RequestBody Map<String, String> request) {
-		String email = request.get("email");
-		String authCode = request.get("authCode");
-		String newPassword = request.get("newPassword");
+	@PostMapping("/new-password")
+	public ResponseEntity<String> verifyResetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
+		String email = passwordResetDTO.getEmail();
+		String authCode = passwordResetDTO.getAuthCode();
+		String newPassword = passwordResetDTO.getNewPassword();
 
 		if (mailService.checkAuthNumber(email, authCode)) {
 			userService.resetPassword(email, newPassword);
@@ -133,6 +135,46 @@ public class UsersController {
 		} else {
 			return new ResponseEntity<>("인증 코드가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	/**
+	 * 사용자로부터 입력받은 ID와 비밀번호로 사용자 계정 삭제
+	 * @author Jihwan
+	 * @param accountDeleteDTO 사용자 ID, 비밀번호
+	 * @return 계정 삭제 성공여부에 따른 결과 메시지
+	 */
+	@PostMapping("/withdrawal")
+	public ResponseEntity<String> deleteAccount(@RequestBody AccountDeleteDTO accountDeleteDTO) {
+		String userId = accountDeleteDTO.getUserId();
+		String password1 = accountDeleteDTO.getPassword1();
+		String password2 = accountDeleteDTO.getPassword2();
+
+		// 비밀번호가 일치하는지 확인
+		if (!password1.equals(password2)) {
+			return new ResponseEntity<>("입력하신 두 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+
+		// 비밀번호가 사용자의 비밀번호와 일치하는지 확인
+		if (!userService.checkPassword(userId, password1)) {
+			return new ResponseEntity<>("아이디 혹은 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST);
+		}
+
+		// 사용자 계정 삭제
+		userService.deleteAccount(userId);
+		return new ResponseEntity<>("회원탈퇴가 완료되었습니다.", HttpStatus.OK);
+	}
+
+	/**
+	 * 사용자 ID로 사용자 정보 조회
+	 * @author Jihwan
+	 * @param requestDTO 사용자 ID
+	 * @return 사용자 ID, 이름, 전화번호, 이메일을 포함한 사용자 정보
+	 */
+	@GetMapping(value = "/userinfo", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<UserInfoDTO> getUserInfo(@RequestBody UserInfoDTO requestDTO) {
+		UserInfoDTO userInfo = userService.getUserInfo(requestDTO.getUserId());
+		System.out.println(userInfo);
+		return new ResponseEntity<>(userInfo, HttpStatus.OK);
 	}
 
 }

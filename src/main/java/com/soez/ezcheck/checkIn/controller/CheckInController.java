@@ -1,5 +1,4 @@
 package com.soez.ezcheck.checkIn.controller;
-
 import java.sql.Date;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class CheckInController {
 
 
 	@PreAuthorize("hasAuthority('User')")
-	@GetMapping("/reservations/{uId}")
+	@GetMapping("/reservations/{rvId}")
 	public ResponseEntity<List<Reservation>> findAllReservationsById(@PathVariable("rvId") Integer rvId) {
 		List<Reservation> reservations = checkInService.findAllReservationsById(rvId);
 		return ResponseEntity.ok(reservations);

@@ -26,7 +26,6 @@ public class MailController {
 	 * @param emailRequestDTO 사용자가 입력한 이메일 주소
 	 * @return 8자리 인증코드
 	 */
-
 	@PostMapping("/send")
 	public String mailSend(@RequestBody @Valid EmailRequestDTO emailRequestDTO) {
 		return mailService.setEmail(emailRequestDTO.getEmail());
@@ -38,7 +37,6 @@ public class MailController {
 	 * @param emailCheckDTO 사용자가 입력한 이메일 주소와 8자리 인증코드
 	 * @return 인증 성공여부에 따른 결과 메시지
 	 */
-
 	@PostMapping("/check")
 	public String authCheck(@RequestBody @Valid EmailCheckDTO emailCheckDTO) {
 		boolean checked = mailService.checkAuthNumber(emailCheckDTO.getEmail(), emailCheckDTO.getAuthCode());

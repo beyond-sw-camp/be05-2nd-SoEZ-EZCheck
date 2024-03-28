@@ -94,8 +94,8 @@ public class FacilityController {
 		}
 	}
 
-	@PreAuthorize("hasAuthority('Admin')")
 	// 시설물 클로우즈   설정4\
+	@PreAuthorize("hasAuthority('Admin')")
 	@PutMapping("/close/{facilityid}")
 	public ResponseEntity<String> closeFacility(@PathVariable("facilityid") Integer facilityId) {
 		try {
@@ -106,8 +106,8 @@ public class FacilityController {
 		}
 	}
 
-
 	// 시간 별 시설물 조회 시설물 id
+	@PreAuthorize("hasAuthority('Admin')")
 	@GetMapping("/facilityreservation/{date}/{time}/{reservNum}")
 	public List<Facility> getAvailabilityForFacility(@PathVariable("date") Date date,
 		@PathVariable("time") Time time, @PathVariable("reservNum") Integer num) {
